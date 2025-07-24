@@ -6,7 +6,7 @@ import {
   Play,
 } from "lucide-react";
 import { Link } from "react-router-dom";
-import "./HeroCarousel.css";
+import "./main.css";
 
 const slides = [
   {
