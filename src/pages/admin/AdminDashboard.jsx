@@ -13,7 +13,8 @@ const AdminDashboard = () => {
   const [bookings, setBookings] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  const { token } = useAuth();
+  // const { token } = useAuth();
+ const token = localStorage.getItem("adminToken");
 console.log(token)
   const fetchData = async () => {
     try {

@@ -1,4 +1,5 @@
 import { Shield, Award, Users, Clock, Car, CheckCircle } from "lucide-react";
+import Requirements from "./Requirements";
 
 const About = () => {
   const features = [
@@ -78,39 +79,24 @@ const About = () => {
         </div>
       </section>
 
-      {/* Our Story Section */}
-      <section className="py-5">
-        <div className="container">
-          <div className="row">
-            <div className="col-lg-6 mb-4">
-              <h2 className="mb-4">Our Story</h2>
-              <p className="mb-3">
-                Founded in 2019, DriveEasy started with a simple vision: to
-                revolutionize the car rental industry by providing hassle-free,
-                self-drive experiences to our customers.
-              </p>
-              <p className="mb-3">
-                What began as a small fleet of 5 cars has now grown to over 50
-                vehicles, serving hundreds of satisfied customers across the
-                city. We believe in transparency, quality, and customer
-                satisfaction above all else.
-              </p>
-              <p>
-                Our team is dedicated to maintaining the highest standards of
-                service and ensuring that every journey with DriveEasy is
-                memorable and safe.
-              </p>
-            </div>
-            <div className="col-lg-6">
-              <img
-                src="/placeholder.svg?height=400&width=500&text=Our+Story+Image"
-                alt="Our Story"
-                className="img-fluid rounded"
-              />
+    {/* Services & Booking Summary */}
+          <div className="row m-1 m-md-4 ">
+            <div className="col-md-12">
+              <div className="card p-4 shadow-sm">
+                <h5>About HK Self‑Driving Car Rentals</h5>
+                <p>
+                  Established recently, HK Self‑Drive Cars offers flexible rental
+                  options across Boduppal, Vanasthalipuram, and Dilsukhnagar.
+                  Choose from hatchbacks, sedans, SUVs, and EVs. Rentals available
+                  hourly, daily, weekly, or monthly. Add-ons include GPS, baby seats,
+                  insurance, fuel options, and chauffeur services. We also offer
+                  doorstep delivery and pickup.
+                </p>
+
+                <Requirements/>
+              </div>
             </div>
           </div>
-        </div>
-      </section>
 
       {/* Features Section */}
       <section className="py-5 bg-light">
@@ -284,6 +270,7 @@ const About = () => {
           </div>
         </div>
       </section>
+      
     </div>
   );
 };

@@ -17,8 +17,20 @@ const FeaturedCarsCarousel = () => {
   const { token } = useAuth();
   const [featuredCars, setFeaturedCars] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [visibleCount, setVisibleCount] = useState(3);
 
-  const visibleCount = 3;
+  // Adjust visible count based on screen size
+  useEffect(() => {
+    const updateVisibleCount = () => {
+      if (window.innerWidth < 576) setVisibleCount(1);
+      else if (window.innerWidth < 768) setVisibleCount(2);
+      else setVisibleCount(3);
+    };
+
+    updateVisibleCount();
+    window.addEventListener("resize", updateVisibleCount);
+    return () => window.removeEventListener("resize", updateVisibleCount);
+  }, []);
 
   useEffect(() => {
     const fetchFeaturedCars = async () => {
@@ -36,16 +48,15 @@ const FeaturedCarsCarousel = () => {
   }, [token]);
 
   const nextSlide = () => {
-    setCurrentIndex(
-      (prev) => (prev + 1) % Math.max(1, featuredCars.length - (visibleCount - 1))
+    setCurrentIndex((prev) =>
+      (prev + 1) % Math.max(1, featuredCars.length - (visibleCount - 1))
     );
   };
 
   const prevSlide = () => {
-    setCurrentIndex(
-      (prev) =>
-        (prev - 1 + Math.max(1, featuredCars.length - (visibleCount - 1))) %
-        Math.max(1, featuredCars.length - (visibleCount - 1))
+    setCurrentIndex((prev) =>
+      (prev - 1 + Math.max(1, featuredCars.length - (visibleCount - 1))) %
+      Math.max(1, featuredCars.length - (visibleCount - 1))
     );
   };
 
@@ -53,7 +64,7 @@ const FeaturedCarsCarousel = () => {
 
   return (
     <div className="position-relative px-2 py-4">
-      <h3 className="mb-4 fw-semibold text-center"> Featured Cars</h3>
+      <h3 className="mb-4 fw-semibold text-center">Featured Cars</h3>
 
       <div className="overflow-hidden px-2">
         <div
@@ -68,7 +79,10 @@ const FeaturedCarsCarousel = () => {
             <div
               key={car._id}
               className="flex-shrink-0 px-2"
-              style={{ width: `${100 / featuredCars.length}%`, maxWidth: "320px" }}
+              style={{
+                width: `${100 / featuredCars.length}%`,
+                maxWidth: "100%",
+              }}
             >
               <div className="card h-100 shadow-sm border-0 rounded-4 overflow-hidden">
                 <div className="position-relative">
@@ -77,7 +91,7 @@ const FeaturedCarsCarousel = () => {
                     className="card-img-top"
                     alt={car.name}
                     style={{
-                      height: "200px",
+                      height: "180px",
                       objectFit: "cover",
                     }}
                   />
@@ -92,12 +106,12 @@ const FeaturedCarsCarousel = () => {
                     {car.available ? "Available" : "Booked"}
                   </span>
                   <div
-                    className="position-absolute bottom-0 start-0 end-0 p-3 text-white"
+                    className="position-absolute bottom-0 start-0 end-0 p-2 text-white"
                     style={{
                       background: "linear-gradient(to top, rgba(0,0,0,0.6), transparent)",
                     }}
                   >
-                    <h5 className="mb-0 text-dark">{car.name}</h5>
+                    <h6 className="mb-0 text-light">{car.name}</h6>
                     <small className="text-light">
                       {car.brand} • {car.type}
                     </small>
@@ -138,7 +152,7 @@ const FeaturedCarsCarousel = () => {
                     </div>
                   )}
 
-                  <div className="d-flex justify-content-between align-items-center mb-3">
+                  <div className="d-flex justify-content-between align-items-center mb-2">
                     <div>
                       <strong className="text-primary h6">₹{car.price}</strong>
                       <small className="text-muted"> /day</small>
@@ -165,14 +179,14 @@ const FeaturedCarsCarousel = () => {
       {featuredCars.length > visibleCount && (
         <>
           <button
-            className="btn btn-light position-absolute top-50 start-0 translate-middle-y shadow rounded-circle"
+            className="btn btn-light position-absolute top-50 start-0 translate-middle-y shadow rounded-circle d-none d-md-flex"
             style={{ width: "38px", height: "38px", zIndex: 5 }}
             onClick={prevSlide}
           >
             <ChevronLeft size={18} />
           </button>
           <button
-            className="btn btn-light position-absolute top-50 end-0 translate-middle-y shadow rounded-circle"
+            className="btn btn-light position-absolute top-50 end-0 translate-middle-y shadow rounded-circle d-none d-md-flex"
             style={{ width: "38px", height: "38px", zIndex: 5 }}
             onClick={nextSlide}
           >
