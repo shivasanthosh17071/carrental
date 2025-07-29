@@ -42,19 +42,11 @@ const BookCar = () => {
   }, [userToken]);
 
   useEffect(() => {
-    const user = JSON.parse(localStorage.getItem("user"));
+    const user = JSON.parse(localStorage.getItem("userData"));
     if (user && user._id) {
       setFormData((prev) => ({
         ...prev,
         customerId: user._id,
-      }));
-    }
-  }, []);
-
-  useEffect(() => {
-    if (user) {
-      setFormData((prev) => ({
-        ...prev,
         customerName: user.name || "",
         customerPhone: user.mobile || "",
         customerEmail: user.email || "",
@@ -158,9 +150,10 @@ const BookCar = () => {
     return <div className="text-danger text-center mt-5">Car not found.</div>;
 
   return (
-    <form className="container p-4 border rounded bg-light" onSubmit={handleSubmit}>
-      <h3 className="mb-3">Book - {car.name}</h3>
+    <form className="container p-4 border rounded bg-light mt-3 mb-5" onSubmit={handleSubmit}>
+      <h3 className="mb-3 text-center">Book - {car.name}</h3>
 
+      {/* Customer details */}
       <input
         name="customerName"
         className="form-control mb-2"
@@ -182,6 +175,7 @@ const BookCar = () => {
         readOnly
       />
 
+      {/* Address */}
       <textarea
         name="address"
         className="form-control mb-2"
@@ -221,6 +215,7 @@ const BookCar = () => {
         onChange={handleChange}
       />
 
+      {/* License */}
       <input
         name="dateOfBirth"
         type="date"
@@ -246,6 +241,7 @@ const BookCar = () => {
         required
       />
 
+      {/* Dates */}
       <div className="row">
         <div className="col-md-6 mb-2">
           <label>Pickup Date</label>
@@ -293,6 +289,7 @@ const BookCar = () => {
         </div>
       </div>
 
+      {/* Purpose */}
       <input
         name="purpose"
         className="form-control mb-2"
@@ -326,9 +323,12 @@ const BookCar = () => {
         onChange={handleChange}
       ></textarea>
 
-      <div className="mt-3">
-        <strong>Total Days:</strong> {calculateDays()} <br />
-        <strong>Total Amount:</strong> ₹{calculateTotal()}
+      {/* Price summary */}
+      <div className="alert alert-info mt-3 small">
+        <strong>Rental Summary:</strong><br />
+        Per Day Rate: ₹{car?.price} <br />
+        Total Days: {calculateDays()} <br />
+        <strong>Total Amount: ₹{calculateTotal()}</strong>
       </div>
 
       <button

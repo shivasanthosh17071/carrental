@@ -97,8 +97,10 @@ const UserLogin = () => {
           },
         })
         .then((response) => {
+          console.log(response)
+          localStorage.setItem("userData", JSON.stringify(response.data));
           setUser(response.data.name);
-          setTimeout(() => navigate("/"), 3000);
+          setTimeout(() => navigate("/"), 2000);
         })
         .catch((error) => {
           console.error(

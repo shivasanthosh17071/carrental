@@ -27,15 +27,33 @@ const Contact = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    setSubmitted(true);
-    setIsSubmitting(false);
-    setFormData({ name: "", email: "", phone: "", subject: "", message: "" });
-    setTimeout(() => setSubmitted(false), 3000);
-  };
+ const handleSubmit = async (e) => {
+  e.preventDefault();
+  setIsSubmitting(true);
+
+  // Format message
+  const message = `New Client Inquiry:
+Name: ${formData.name}
+Email: ${formData.email}
+Phone: ${formData.phone}
+Subject: ${formData.subject}
+Message: ${formData.message}`;
+
+  // WhatsApp API
+  const phoneNumber = "91603879248"; // Use international format without +
+  const url = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+
+  // Open WhatsApp chat
+  window.open(url, "_blank");
+
+  // Optional: Reset form and show success
+  await new Promise((resolve) => setTimeout(resolve, 1000));
+  setSubmitted(true);
+  setIsSubmitting(false);
+  setFormData({ name: "", email: "", phone: "", subject: "", message: "" });
+  setTimeout(() => setSubmitted(false), 40000);
+};
+
 
   const handleWhatsAppClick = () => {
     const message = "Hi! I'd like to know more about HK Self Drive Cars.";
@@ -251,22 +269,7 @@ const Contact = () => {
         </div>
       </section>
 
-      {/* Map Section */}
-      <section className="py-5 bg-light">
-        <div className="container text-center">
-          <h3>Our Office Location</h3>
-          <p className="text-muted">
-            123 Main Street, City Center, Mumbai - 400001
-          </p>
-          {/* If Google Maps link available, you can embed iframe here */}
-          <MapPin size={48} className="text-muted my-3" />
-          <div>
-            <button className="btn btn-outline-primary">
-              View on Google Maps
-            </button>
-          </div>
-        </div>
-      </section>
+   
     </div>
   );
 };

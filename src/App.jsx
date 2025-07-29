@@ -23,6 +23,7 @@ import AddCar from "./pages/admin/AddCar";
 import EditCar from "./pages/admin/EditCar";
 import Bookings from "./pages/admin/Bookings";
 import UserLogin from "./pages/CustomerLogin";
+import Account from "./pages/Account";
 
 function App() {
   const token = localStorage.getItem("adminToken");
@@ -34,7 +35,7 @@ function App() {
   return (
     <CarProvider>
       <ScrollToTop />
-      <div className="App" style={{ paddingTop: "60px" }}>
+      <div className="App" style={{ paddingTop: "90px" }}>
         <Navbar />
         <main>
           <Routes>
@@ -48,7 +49,7 @@ function App() {
             <Route path="/about" element={<About />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/offers" element={<Offers />} />
-
+ <Route path="/account" element={<Account  />} />
             {/* Admin Routes */}
             <Route path="/admin" element={<AdminLogin />} />
             <Route
@@ -90,6 +91,7 @@ function App() {
         </main>
         <Footer />
         <FloatingWhatsApp />
+        
       </div>
     </CarProvider>
   );

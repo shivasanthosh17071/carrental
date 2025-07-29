@@ -15,7 +15,7 @@ const ThankYou = () => {
 
   const handleWhatsAppClick = () => {
     const message = `Hi! My booking has been confirmed. Booking ID: ${bookingId}. Please provide further details about pickup.`;
-    const phoneNumber = "919182868227";
+    const phoneNumber = "919603879248";
     const url = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(
       message
     )}`;
@@ -168,10 +168,10 @@ const ThankYou = () => {
                   <h6>Need Help?</h6>
                   <p className="text-muted small">Call us for any queries</p>
                   <a
-                    href="tel:+919182868227"
+                    href="tel:+919603879248"
                     className="btn btn-outline-primary"
                   >
-                    +91 9182868227
+                    +91 9603879248
                   </a>
                 </div>
               </div>

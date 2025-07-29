@@ -48,7 +48,7 @@ const AdminLogin = () => {
       // Save token in localStorage
       localStorage.setItem("adminToken", token);
 
-      navigate("/admin/dashboard");
+      navigate("/");
     } catch (err) {
       setError(err.response?.data?.error || "Login failed. Please try again.");
     } finally {

@@ -210,9 +210,9 @@ const About = () => {
                       fontWeight: "bold",
                     }}
                   >
-                    RK
+                    T
                   </div>
-                  <h5>Rajesh Kumar</h5>
+                  <h5>Tharun</h5>
                   <p className="text-muted">Founder & CEO</p>
                   <p className="small">
                     Passionate about revolutionizing the car rental industry
@@ -235,7 +235,7 @@ const About = () => {
                   >
                     PS
                   </div>
-                  <h5>Priya Sharma</h5>
+                  <h5>Nikhil Reddy</h5>
                   <p className="text-muted">Operations Manager</p>
                   <p className="small">
                     Ensures smooth operations and maintains our high service
@@ -244,31 +244,15 @@ const About = () => {
                 </div>
               </div>
             </div>
-            <div className="col-lg-4 col-md-6 mb-4">
-              <div className="card text-center">
-                <div className="card-body">
-                  <div
-                    className="bg-info text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3"
-                    style={{
-                      width: "80px",
-                      height: "80px",
-                      fontSize: "32px",
-                      fontWeight: "bold",
-                    }}
-                  >
-                    AP
-                  </div>
-                  <h5>Amit Patel</h5>
-                  <p className="text-muted">Customer Support Lead</p>
-                  <p className="small">
-                    Dedicated to providing exceptional customer service and
-                    support 24/7.
-                  </p>
-                </div>
-              </div>
-            </div>
+           
           </div>
         </div>
+          {/* Embedded Map */}
+    <div className="w-75 w-md-50 mx-auto mt-5">
+      <div className="ratio ratio-16x9">
+        <iframe src="https://www.google.com/maps/d/embed?mid=17fbX4YkoS9QBlfRMP-Ww3w0Dt48WwaA&ehbc=2E312F" width="60" height="80"></iframe>
+      </div>
+    </div>
       </section>
       
     </div>

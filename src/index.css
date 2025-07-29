@@ -464,68 +464,36 @@ h6 {
 }
 
 /* Premium Navbar - Responsive */
+/* Enhanced Navbar Transitions */
 .navbar {
   background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(20px);
   border-bottom: 1px solid var(--gray-200);
   box-shadow: var(--shadow-sm);
-  transition: all 0.3s ease;
+  transition: top 0.4s ease-in-out, background-color 0.3s ease;
   padding: 0.75rem 0;
-}
-
-@media (min-width: 1200px) and (max-width: 1599px) {
-  .navbar {
-    padding: 0.5rem 0;
-  }
-}
-
-.navbar-brand {
-  font-family: "Playfair Display", serif;
-  font-weight: 700;
-  font-size: 1.75rem;
-  background: linear-gradient(
-    135deg,
-    var(--primary-color),
-    var(--accent-color)
-  );
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-@media (min-width: 1200px) and (max-width: 1599px) {
-  .navbar-brand {
-    font-size: 1.5rem;
-  }
+  will-change: top;
 }
 
 .navbar-nav .nav-link {
-  font-weight: 500;
-  color: var(--text-secondary);
-  transition: all 0.3s ease;
   position: relative;
-  margin: 0 0.5rem;
-  padding: 0.5rem 0.75rem;
+  transition: color 0.3s ease, transform 0.3s ease;
 }
 
-@media (min-width: 1200px) and (max-width: 1599px) {
-  .navbar-nav .nav-link {
-    margin: 0 0.25rem;
-    padding: 0.4rem 0.6rem;
-    font-size: 0.9rem;
-  }
+.navbar-nav .nav-link:hover {
+  transform: translateY(-1px);
 }
 
 .navbar-nav .nav-link::after {
   content: "";
   position: absolute;
-  bottom: -5px;
+  bottom: -4px;
   left: 50%;
+  transform: translateX(-50%);
   width: 0;
   height: 2px;
   background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
-  transition: all 0.3s ease;
-  transform: translateX(-50%);
+  transition: width 0.3s ease;
 }
 
 .navbar-nav .nav-link:hover::after,
@@ -533,10 +501,22 @@ h6 {
   width: 100%;
 }
 
-.navbar-nav .nav-link:hover,
-.navbar-nav .nav-link.active {
-  color: var(--primary-color);
+/* Billboard Quote */
+.quote-banner {
+  animation: fadeSlide 0.6s ease forwards;
 }
+
+@keyframes fadeSlide {
+  0% {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 
 /* Premium Footer - Responsive */
 .footer {

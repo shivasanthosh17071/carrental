@@ -5,7 +5,8 @@ import { useNavigate, Link } from "react-router-dom";
 import { Car, Users, Calendar, Plus, Eye } from "lucide-react";
 import axios from "../../api/axiosConfig";
 import CarCard from "../../components/CarCard";
-import { useAuth } from "../../AuthContext";
+// import { useAuth } from "../../AuthContext";
+import LoadingSpinner from "../../components/LoadingSpinner";
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
@@ -15,7 +16,7 @@ const AdminDashboard = () => {
 
   // const { token } = useAuth();
  const token = localStorage.getItem("adminToken");
-console.log(token)
+
   const fetchData = async () => {
     try {
       const [carRes, bookingRes] = await Promise.all([
@@ -31,7 +32,7 @@ console.log(token)
       setBookings(bookingRes.data);
     } catch (err) {
       console.error("Error fetching data:", err);
-      if (err.response?.status === 401) navigate("/admin");
+      if (err.response?.status === 401) navigate("/");
     } finally {
       setIsLoading(false);
     }
@@ -87,20 +88,34 @@ useEffect(() => {
   fetchData();
 }, [token]);
 
-  if (isLoading) return <div className="text-center py-5">Loading...</div>;
+  if (isLoading) return  <LoadingSpinner text="admin dashboard loading..." />;
  
   return (
     <div className="container py-4 fade-in">
       <div className="d-flex justify-content-between align-items-center mb-4">
-        <div>
-          <h2>Admin Dashboard</h2>
-          <p className="text-muted mb-0">Manage your car rental business</p>
-        </div>
-        <Link to="/admin/add-car" className="btn btn-primary">
-          <Plus size={16} className="me-2" />
-          Add New Car
-        </Link>
-      </div>
+  <div>
+    <h2>Admin Dashboard</h2>
+    <p className="text-muted mb-0">Manage your car rental business</p>
+  </div>
+  <div className="d-flex gap-2">
+    <Link to="/admin/add-car" className="btn btn-primary">
+      <Plus size={16} className="me-2" />
+      Add New Car
+    </Link>
+    <button
+      className="btn btn-outline-danger"
+      onClick={() => {
+        if (window.confirm("Are you sure you want to logout?")) {
+          localStorage.removeItem("adminToken");
+          navigate("/");
+        }
+      }}
+    >
+      Logout
+    </button>
+  </div>
+</div>
+
 
       {/* Stats Cards */}
       <div className="row mb-5">

@@ -84,7 +84,7 @@ const FeaturedCarsCarousel = () => {
                 maxWidth: "100%",
               }}
             >
-              <div className="card h-100 shadow-sm border-0 rounded-4 overflow-hidden">
+              <div className="card h-100 shadow-sm border-0 rounded- overflow-hidden">
                 <div className="position-relative">
                   <img
                     src={car.images[0] || "/placeholder.svg"}
@@ -178,19 +178,20 @@ const FeaturedCarsCarousel = () => {
 
       {featuredCars.length > visibleCount && (
         <>
-          <button
-            className="btn btn-light position-absolute top-50 start-0 translate-middle-y shadow rounded-circle d-none d-md-flex"
-            style={{ width: "38px", height: "38px", zIndex: 5 }}
+         <button
             onClick={prevSlide}
+            className="carousel-nav-btn position-absolute top-50 start-0 translate-middle-y d-none d-lg-flex align-items-center justify-content-center"
+            aria-label="Previous testimonial"
           >
-            <ChevronLeft size={18} />
+            <ChevronLeft className="arrow-icon" size={24} />
           </button>
-          <button
-            className="btn btn-light position-absolute top-50 end-0 translate-middle-y shadow rounded-circle d-none d-md-flex"
-            style={{ width: "38px", height: "38px", zIndex: 5 }}
+
+           <button
             onClick={nextSlide}
+            className="carousel-nav-btn position-absolute top-50 end-0 translate-middle-y d-none d-lg-flex align-items-center justify-content-center"
+            aria-label="Next testimonial"
           >
-            <ChevronRight size={18} />
+            <ChevronRight className="arrow-icon" size={24} />
           </button>
         </>
       )}

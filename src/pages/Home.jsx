@@ -24,6 +24,10 @@ import {
   Target,
   Compass,
   Gift,
+  Package,
+  Book,
+  
+
 } from "lucide-react"
 import { useCarContext } from "../context/CarContext"
 import HeroCarousel from "../components/HeroCarousel"
@@ -39,36 +43,41 @@ const Home = () => {
     setFeaturedCars(getFeaturedCars())
   }, [])
 
-  const services = [
-    {
-      icon: <Shield size={32} className="text-primary" />,
-      title: "Complete Insurance",
-      description: "Full coverage protection with zero deductible for worry-free driving experience.",
-      features: ["Zero Liability", "Comprehensive Coverage", "24/7 Claims Support"],
-      color: "primary",
-    },
-    {
-      icon: <Clock size={32} className="text-warning" />,
-      title: "Instant Booking",
-      description: "Book your perfect car in under 2 minutes with our smart booking system.",
-      features: ["2-Minute Booking", "Instant Confirmation", "Flexible Timing"],
-      color: "warning",
-    },
-    {
-      icon: <Headphones size={32} className="text-success" />,
-      title: "Premium Support",
-      description: "Dedicated customer success team available round the clock for assistance.",
-      features: ["24/7 Available", "Expert Assistance", "Multilingual Support"],
-      color: "success",
-    },
-    {
-      icon: <Navigation size={32} className="text-info" />,
-      title: "GPS Navigation",
-      description: "Advanced GPS systems with real-time traffic updates and route optimization.",
-      features: ["Real-time Traffic", "Voice Navigation", "Offline Maps"],
-      color: "info",
-    },
-  ]
+ const services = [
+  {
+    title: "Wide Coverage Across Hyderabad",
+    description:
+      "We serve multiple key areas including Boduppal, Vanasthalipuram, and Dilsukhnagar with 24/7 service availability.",
+    color: "primary",
+    icon: <MapPin size={32} />,
+    features: ["Multiple pickup locations", "Doorstep delivery", "Pan-city access"],
+  },
+  {
+    title: "Flexible Rental Plans",
+    description:
+      "Choose from hourly, daily, weekly, or monthly plans to suit your needs — perfect for both short and long trips.",
+    color: "success",
+    icon: <Clock size={32} />,
+    features: ["Hourly to Monthly rentals", "Tourist-friendly options", "No account needed"],
+  },
+  
+  {
+    title: "Value-Added Services",
+    description:
+      "Enjoy added convenience with GPS, insurance, doorstep delivery, and fuel options — all under one roof.",
+    color: "warning",
+    icon: <Package size={32} />,
+    features: ["GPS, Insurance", "Doorstep pickup", "Fuel plans available"],
+  },
+{
+  title: "International Tourist Friendly",
+  description:
+    "Visiting from abroad? We welcome tourists with easy booking and passport-based verification.",
+  color: "primary",
+  icon: <Globe size={32} />,
+  features: ["Tourist bookings accepted", "No local ID required", "English support available"],
+},
+];
 
   const processSteps = [
     {
@@ -218,7 +227,7 @@ const Home = () => {
               <div className="d-flex align-items-center justify-content-center">
                 <Car size={24} className="me-2" />
                 <div>
-                  <div className="h5 mb-0 fw-bold">50+</div>
+                  <div className="h5 mb-0 fw-bold">100+</div>
                   <small className="opacity-75">Premium Cars</small>
                 </div>
               </div>
@@ -227,7 +236,7 @@ const Home = () => {
               <div className="d-flex align-items-center justify-content-center">
                 <Users size={24} className="me-2" />
                 <div>
-                  <div className="h5 mb-0 fw-bold">10K+</div>
+                  <div className="h5 mb-0 fw-bold">50K+</div>
                   <small className="opacity-75">Happy Customers</small>
                 </div>
               </div>
@@ -288,66 +297,6 @@ const Home = () => {
     </div>
   </div>
 </section>
-
-
-      {/* Services Section */}
-      <section className="py-5">
-        <div className="container">
-          <div className="text-center mb-5">
-            <div className="d-flex align-items-center justify-content-center mb-3">
-              <Award size={24} className="text-secondary me-2" />
-              <span className="badge bg-secondary text-white px-3 py-2 rounded-pill">
-                Our Services
-              </span>
-            </div>
-            <h2 className="display-5 fw-bold text-gradient-secondary mb-3">
-              Everything You Need
-            </h2>
-            <p
-              className="lead text-muted mx-auto"
-              style={{ maxWidth: "700px" }}
-            >
-              We provide comprehensive car rental solutions with premium
-              features and unmatched service quality.
-            </p>
-          </div>
-
-          <div className="row">
-            {services.map((service, index) => (
-              <div key={index} className="col-lg-6 col-xl-3 mb-4">
-                <div className="premium-card h-100 p-4 text-center">
-                  <div className="mb-4">
-                    <div
-                      className="rounded-circle d-inline-flex align-items-center justify-content-center mb-3"
-                      style={{
-                        width: "80px",
-                        height: "80px",
-                        background: `var(--${service.color}-color)`,
-                        color: "white",
-                      }}
-                    >
-                      {service.icon}
-                    </div>
-                    <h5 className="fw-bold mb-3">{service.title}</h5>
-                    <p className="text-muted mb-4">{service.description}</p>
-                  </div>
-                  <div className="mt-auto">
-                    {service.features.map((feature, idx) => (
-                      <div key={idx} className="d-flex align-items-center mb-2">
-                        <CheckCircle
-                          size={16}
-                          className={`text-${service.color} me-2`}
-                        />
-                        <small className="text-muted">{feature}</small>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
 
       {/* How It Works Section */}
       <section className="py-5" style={{ background: "var(--bg-secondary)" }}>
@@ -414,11 +363,72 @@ const Home = () => {
           </div>
         </div>
       </section>
+      {/* Services Section */}
+     {/* Services Section */}
+<section className="py-5">
+  <div className="container">
+    <div className="text-center mb-5">
+      <div className="d-flex align-items-center justify-content-center mb-3">
+        <Award size={24} className="text-secondary me-2" />
+        <span className="badge bg-secondary text-white px-3 py-2 rounded-pill">
+          Our Services
+        </span>
+      </div>
+      <h2 className="display-5 fw-bold text-gradient-secondary mb-3">
+        Everything You Need
+      </h2>
+      <p
+        className="lead text-light mx-auto"
+        style={{ maxWidth: "700px" }}
+      >
+        Our self-drive car rentals offer full flexibility, transparent pricing,
+        and a wide vehicle selection to meet your travel needs in and around Hyderabad.
+      </p>
+    </div>
+
+    <div className="row">
+      {services.map((service, index) => (
+        <div key={index} className="col-lg-6 col-xl-3 mb-4">
+          <div className="premium-card h-100 p-4 text-center">
+            <div className="mb-4">
+              <div
+                className="rounded-circle d-inline-flex align-items-center justify-content-center mb-3"
+                style={{
+                  width: "80px",
+                  height: "80px",
+                  background: `var(--${service.color}-color)`,
+                  color: "white",
+                }}
+              >
+                {service.icon}
+              </div>
+              <h5 className="fw-bold mb-3">{service.title}</h5>
+              <p className="text-muted mb-4">{service.description}</p>
+            </div>
+            <div className="mt-auto">
+              {service.features.map((feature, idx) => (
+                <div key={idx} className="d-flex align-items-center mb-2">
+                  <CheckCircle
+                    size={16}
+                    className={`text-${service.color} me-2`}
+                  />
+                  <small className="text-muted">{feature}</small>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
 
 
 
 
- {/* Why Choose Us Section */}
+
+
+
 <section className="py-5" style={{ background: "var(--bg-secondary)" }}>
   <div className="container">
     <div className="row align-items-center">
@@ -433,9 +443,7 @@ const Home = () => {
           Your Ride, Your Rules
         </h2>
         <p className="lead text-muted mb-4">
-          At HK Self-Drive Cars, we offer hassle-free, 24x7 access to a wide
-          range of vehicles with doorstep delivery, no hidden requirements, and
-          transparent pricing.
+          HK Self-Drive Cars has been providing 24/7 hassle-free rentals across Hyderabad since 2020. With a broad range of vehicles and doorstep delivery, we make self-driving simple and accessible—no accounts, no complications.
         </p>
 
         <div className="row">
@@ -450,15 +458,15 @@ const Home = () => {
                     background: "var(--bg-primary)",
                   }}
                 >
-                  <Clock size={20} className="text-white" />
+                  <Clock size={20} className="text-warning" />
                 </div>
               </div>
               <div>
-                <h6 className="fw-bold mb-2">24/7 Availability</h6>
+                <h6 className="fw-bold mb-2">24/7 Operations</h6>
                 <p className="text-muted small mb-2">
-                  Anytime, anywhere—book a ride on your schedule.
+                  Round-the-clock access to bookings and support—day or night.
                 </p>
-                <div className="badge bg-light text-dark">Open All Hours</div>
+                <div className="badge bg-light text-dark">Always Available</div>
               </div>
             </div>
           </div>
@@ -474,15 +482,15 @@ const Home = () => {
                     background: "var(--bg-primary)",
                   }}
                 >
-                  <Shield size={20} className="text-white" />
+                  <Shield size={20} className="text-warning" />
                 </div>
               </div>
               <div>
-                <h6 className="fw-bold mb-2">No Hidden Conditions</h6>
+                <h6 className="fw-bold mb-2">Simple Requirements</h6>
                 <p className="text-muted small mb-2">
-                  Just a valid license & original documents. No accounts, no hassles.
+                  Just a valid DL & original ID proof. No verification accounts required.
                 </p>
-                <div className="badge bg-light text-dark">Easy Verification</div>
+                <div className="badge bg-light text-dark">Book with Confidence</div>
               </div>
             </div>
           </div>
@@ -498,15 +506,15 @@ const Home = () => {
                     background: "var(--bg-primary)",
                   }}
                 >
-                  <Car size={20} className="text-white" />
+                  <Car size={20} className="text-warning" />
                 </div>
               </div>
               <div>
                 <h6 className="fw-bold mb-2">Doorstep Delivery</h6>
                 <p className="text-muted small mb-2">
-                  Get your ride delivered or picked up—no need to visit us.
+                  We deliver and pick up vehicles at your location—across Hyderabad.
                 </p>
-                <div className="badge bg-light text-dark">Pan-Hyderabad</div>
+                <div className="badge bg-light text-dark">City-Wide Reach</div>
               </div>
             </div>
           </div>
@@ -522,15 +530,15 @@ const Home = () => {
                     background: "var(--bg-primary)",
                   }}
                 >
-                  <Globe size={20} className="text-white" />
+                  <Globe size={20} className="text-warning" />
                 </div>
               </div>
               <div>
                 <h6 className="fw-bold mb-2">Tourist Friendly</h6>
                 <p className="text-muted small mb-2">
-                  Visitors from India or abroad can rent with ease—no restrictions.
+                  No local restrictions—Indian and international tourists are welcome.
                 </p>
-                <div className="badge bg-light text-dark">International Access</div>
+                <div className="badge bg-light text-dark">Global Access</div>
               </div>
             </div>
           </div>
@@ -567,6 +575,7 @@ const Home = () => {
     </div>
   </div>
 </section>
+
 
 
       {/* Testimonials Section */}
@@ -744,12 +753,7 @@ const Home = () => {
 </div>
 
 
-    {/* Embedded Map */}
-    <div className="w-75 w-md-50 mx-auto mt-5">
-      <div className="ratio ratio-16x9">
-        <iframe src="https://www.google.com/maps/d/embed?mid=17fbX4YkoS9QBlfRMP-Ww3w0Dt48WwaA&ehbc=2E312F" width="60" height="80"></iframe>
-      </div>
-    </div>
+  
   </div>
 </section>
 

@@ -44,7 +44,7 @@ const CarDetails = () => {
 
   const handleWhatsAppClick = () => {
     const message = `Hi! I'm interested in booking the ${car.name}. Can you provide more details about availability and pricing?`;
-    const phoneNumber = "919182868227";
+    const phoneNumber = "919603879248";
     const url = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(
       message
     )}`;
@@ -92,25 +92,28 @@ const CarDetails = () => {
 
             <div className="card-body">
               <div className="row g-2">
-                {car.images?.map((image, index) => (
-                  <div key={index} className="col-4">
-                    <img
-                      src={image || "/placeholder.svg"}
-                      alt={`${car.name} - Thumbnail ${index + 1}`}
-                      className={`img-fluid rounded cursor-pointer ${
-                        currentImageIndex === index
-                          ? "border border-primary border-3"
-                          : ""
-                      }`}
-                      style={{
-                        height: "80px",
-                        objectFit: "cover",
-                        cursor: "pointer",
-                      }}
-                      onClick={() => setCurrentImageIndex(index)}
-                    />
-                  </div>
-                ))}
+                <div className="row g-0">
+  {car.images?.map((image, index) => (
+    <div key={index} className="col-4">
+      <img
+        src={image || "/placeholder.svg"}
+        alt={`${car.name} - Thumbnail ${index + 1}`}
+        className={`img-fluid rounded cursor-pointer ${
+          currentImageIndex === index
+            ? "border border-primary border-3"
+            : ""
+        }`}
+        style={{
+          height: "80px",
+          objectFit: "cover",
+          cursor: "pointer",
+        }}
+        onClick={() => setCurrentImageIndex(index)}
+      />
+    </div>
+  ))}
+</div>
+
               </div>
             </div>
           </div>
@@ -229,36 +232,42 @@ const CarDetails = () => {
           </div>
         </div>
 
-        {/* Rental Terms */}
-        <div className="col-lg-4">
-          <div className="card">
-            <div className="card-body">
-              <h5 className="card-title">Rental Terms</h5>
-              <ul className="list-unstyled">
-                <li className="mb-2">
-                  <CheckCircle size={16} className="text-success me-2" />
-                  Minimum age: 21 years
-                </li>
-                <li className="mb-2">
-                  <CheckCircle size={16} className="text-success me-2" />
-                  Valid driving license required
-                </li>
-                <li className="mb-2">
-                  <CheckCircle size={16} className="text-success me-2" />
-                  Security deposit: ₹5,000
-                </li>
-                <li className="mb-2">
-                  <CheckCircle size={16} className="text-success me-2" />
-                  Fuel: Return with same level
-                </li>
-                <li className="mb-2">
-                  <CheckCircle size={16} className="text-success me-2" />
-                  24/7 roadside assistance
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
+  {/* Rental Terms */}
+<div className="col-lg-4">
+  <div className="card">
+    <div className="card-body">
+      <h5 className="card-title">Rental Terms</h5>
+      <ul className="list-unstyled">
+        <li className="mb-2">
+          <CheckCircle size={16} className="text-success me-2" />
+          Minimum age: 21 years
+        </li>
+        <li className="mb-2">
+          <CheckCircle size={16} className="text-success me-2" />
+          Valid driving license mandatory: 4 wheeler and above valid DL
+        </li>
+        <li className="mb-2">
+          <CheckCircle size={16} className="text-success me-2" />
+          Documents required: Original Aadhaar, Driving License (2 wheeler with Original RC) OR Passport with ₹30,000 cash and original DL
+        </li>
+      
+        <li className="mb-2">
+          <CheckCircle size={16} className="text-success me-2" />
+          Limited Kilometers
+        </li>
+        <li className="mb-2">
+          <CheckCircle size={16} className="text-success me-2" />
+          International tourists can book cars
+        </li>
+        <li className="mb-2">
+          <CheckCircle size={16} className="text-success me-2" />
+          Verification needed before booking
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+
       </div>
     </div>
   );

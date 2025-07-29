@@ -8,3 +8,5 @@ const axiosInstance = axios.create({
 });
 
 export default axiosInstance;
+// testing server :   https://car-rental-test-1.onrender.com/api
+//loclhost :  http://localhost:8000/

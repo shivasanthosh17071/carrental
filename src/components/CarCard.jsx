@@ -22,7 +22,7 @@ const CarCard = ({
   const handleWhatsAppClick = (e) => {
     e.preventDefault();
     const message = `Hi! I'm interested in the ${car.name}. Can you provide more details?`;
-    const phoneNumber = "919182868227";
+    const phoneNumber = "919603879248";
     const url = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
     window.open(url, "_blank");
   };

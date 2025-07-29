@@ -11,40 +11,39 @@ import "./main.css";
 const slides = [
   {
     id: 1,
-    title: "Drive Your Dreams",
-    subtitle: "Premium Self-Drive Experience",
+    title: "Explore Premium Cars",
+    subtitle: "Drive with Style and Comfort",
     description:
-      "Freedom of the road starts here. Explore premium cars for your next journey.",
+      "Discover a range of luxury and performance vehicles designed for an unforgettable driving experience.",
     image: "https://images.pexels.com/photos/707046/pexels-photo-707046.jpeg",
-    cta: "Explore Cars",
+    cta: "Browse Cars",
     ctaLink: "/cars",
-    features: ["Premium Fleet", "24/7 Support", "Best Prices"],
+    features: ["Luxury Interiors", "Top Performance", "Advanced Safety"],
   },
   {
     id: 2,
-    title: "Weekend Adventures",
-    subtitle: "Special Weekend Offers",
+    title: "SUVs for Every Terrain",
+    subtitle: "Power Meets Versatility",
     description:
-      "Book this weekend and enjoy up to 25% off across all locations.",
-    image:
-      "https://images.pexels.com/photos/593172/pexels-photo-593172.jpeg",
-    cta: "View Offers",
-    ctaLink: "/offers",
-    features: ["25% Off", "Weekend Special", "All Locations"],
+      "Whether it's city streets or rugged trails, our SUV lineup is built to handle every journey.",
+    image: "https://images.pexels.com/photos/593172/pexels-photo-593172.jpeg",
+    cta: "Explore SUVs",
+    ctaLink: "/cars",
+    features: ["All-Wheel Drive", "Spacious Interiors", "Modern Tech"],
   },
   {
     id: 3,
-    title: "Business Travel",
-    subtitle: "Corporate Excellence",
+    title: "Unleash Performance",
+    subtitle: "Sports Cars Collection",
     description:
-      "Reliable corporate rides with premium support and pricing plans.",
-    image:
-      "https://images.pexels.com/photos/326259/pexels-photo-326259.jpeg",
-    cta: "Contact Us",
-    ctaLink: "/contact",
-    features: ["Corporate Rates", "Professional Service", "Flexible Booking"],
+      "Experience the thrill of high-speed driving with our exclusive lineup of sports cars.",
+    image: "https://images.pexels.com/photos/326259/pexels-photo-326259.jpeg",
+    cta: "View Sports Cars",
+    ctaLink: "/cars",
+    features: ["High Horsepower", "Aerodynamic Design", "Precision Handling"],
   },
 ];
+
 
 export default function HeroCarousel() {
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -70,7 +69,8 @@ export default function HeroCarousel() {
 
           <div className="hero-content-wrapper">
             <div className="hero-content">
-              <h5 className="text-secondary">{slide.subtitle}</h5>
+              {/* <h5 className="text-secondary">{slide.subtitle}</h5> */}
+              
               <h1 className="text-white">{slide.title}</h1>
               <p>{slide.description}</p>
 
