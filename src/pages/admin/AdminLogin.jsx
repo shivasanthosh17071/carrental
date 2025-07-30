@@ -17,14 +17,14 @@ const AdminLogin = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const { token, user } = useAuth();
-  console.log(user);
+  const  token   = localStorage.getItem("adminToken")
+ 
   useEffect(() => {
     console.log(token);
-    if (token || localStorage.getItem("adminToken")) {
+    if (token ) {
       navigate("/admin/dashboard");
     }
-  }, [token]);
+  }, []);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -48,7 +48,7 @@ const AdminLogin = () => {
       // Save token in localStorage
       localStorage.setItem("adminToken", token);
 
-      navigate("/");
+      navigate("/admin/dashboard");
     } catch (err) {
       setError(err.response?.data?.error || "Login failed. Please try again.");
     } finally {

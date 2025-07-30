@@ -136,7 +136,7 @@ const Cars = () => {
      <div className="row align-items-center mb-4">
   {/* Heading on the left */}
   <div className="col-12 col-lg-4">
-    <h3 className="fw-bold mb-0">Our Cars</h3>
+    <h2  style={{ fontSize: "1.7rem" }} className="fw-bold mb-0"> Discover Your Perfect Drive</h2>
   </div>
 
   {/* Search & Filters aligned to the right */}
@@ -304,13 +304,14 @@ const Cars = () => {
           </div>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={() => setFilterModalShow(false)}>
-            Close
-          </Button>
-          <Button variant="danger" onClick={clearFilters}>
-            Clear All
-          </Button>
-        </Modal.Footer>
+  
+  <Button variant="danger" onClick={clearFilters}>
+    Clear All
+  </Button>
+  <Button variant="primary" onClick={() => setFilterModalShow(false)}>
+    Apply
+  </Button>
+</Modal.Footer>
       </Modal>
     </div>
   )

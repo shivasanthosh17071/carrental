@@ -172,6 +172,12 @@ const Footer = () => {
               <Link to="/support" className="text-light opacity-75 text-decoration-none">
                 Support
               </Link>
+              <Link to="admin/" className="text-light opacity-75 text-decoration-none">
+                Admin
+              </Link>
+               <Link to="admin/dashboard" className="text-light opacity-75 text-decoration-none">
+                dashboard
+              </Link>
             </div>
           </div>
         </div>

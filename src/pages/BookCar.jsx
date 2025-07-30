@@ -1,14 +1,48 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "../api/axiosConfig";
-import { useAuth } from "../AuthContext";
+import {
+  Car,
+  User,
+  Calendar,
+  ClipboardList,
+  MapPin,
+  CheckCircle,
+} from "lucide-react";
+
+const StepIndicator = ({ step }) => {
+  const steps = ["Details", "Address", "License", "Schedule", "Summary"];
+  return (
+    <div className="d-flex justify-content-between mb-4 px-1">
+      {steps.map((s, index) => (
+        <div key={index} className="text-center flex-fill">
+          <div
+            className={`rounded-circle mx-auto mb-1 ${
+              step >= index ? "bg-primary" : "bg-light"
+            }`}
+            style={{
+              width: 32,
+              height: 32,
+              lineHeight: "32px",
+              color: step >= index ? "white" : "#777",
+              fontWeight: "bold",
+            }}
+          >
+            {index + 1}
+          </div>
+          <small>{s}</small>
+        </div>
+      ))}
+    </div>
+  );
+};
 
 const BookCar = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { userToken, user } = useAuth();
 
+  const [step, setStep] = useState(0);
   const [car, setCar] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -36,13 +70,16 @@ const BookCar = () => {
     originalDocumentsSubmitted: "",
   });
 
-  useEffect(() => {
-    const token = localStorage.getItem("userToken");
-    if (!token) navigate("/login");
-  }, [userToken]);
+  const userToken = localStorage.getItem("userToken");
+  const user = JSON.parse(localStorage.getItem("userData"));
 
+  // Redirect if not logged in
   useEffect(() => {
-    const user = JSON.parse(localStorage.getItem("userData"));
+    if (!userToken) navigate("/login");
+  }, [userToken, navigate]);
+
+  // Populate user info once
+  useEffect(() => {
     if (user && user._id) {
       setFormData((prev) => ({
         ...prev,
@@ -52,8 +89,11 @@ const BookCar = () => {
         customerEmail: user.email || "",
       }));
     }
-  }, [user]);
+    // Run only once
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
+  // Fetch car data
   useEffect(() => {
     if (!userToken) return;
     const fetchCar = async () => {
@@ -63,7 +103,6 @@ const BookCar = () => {
         });
         setCar(res.data);
       } catch (err) {
-        console.error("Failed to load car:", err);
         alert("Failed to load car details.");
       } finally {
         setIsLoading(false);
@@ -72,63 +111,64 @@ const BookCar = () => {
     fetchCar();
   }, [id, userToken]);
 
-  const calculateDays = () => {
+  const handleChange = (e) =>
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+
+  const totalDays = useMemo(() => {
     const start = new Date(`${formData.pickupDate}T${formData.pickupTime}`);
     const end = new Date(`${formData.returnDate}T${formData.returnTime}`);
     const diff = Math.ceil((end - start) / (1000 * 60 * 60 * 24));
     return diff > 0 ? diff : 1;
+  }, [formData]);
+
+  const totalAmount = useMemo(() => car?.price * totalDays, [car?.price, totalDays]);
+
+  const isCurrentStepValid = () => {
+    switch (step) {
+      case 0:
+        return formData.customerEmail;
+      case 1:
+        return formData.address && formData.city && formData.state;
+      case 2:
+        return formData.driverLicenseNumber && formData.dateOfBirth;
+      case 3:
+        return (
+          formData.pickupDate &&
+          formData.returnDate &&
+          formData.pickupTime &&
+          formData.returnTime
+        );
+      default:
+        return true;
+    }
   };
 
-  const calculateTotal = () => {
-    return car?.price * calculateDays();
+  const nextStep = () => {
+    if (!isCurrentStepValid()) return alert("Please complete this section.");
+    setStep((prev) => Math.min(prev + 1, 4));
   };
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  const validateForm = () => {
-    return (
-      formData.customerName &&
-      formData.customerPhone &&
-      formData.customerEmail &&
-      formData.pickupDate &&
-      formData.returnDate &&
-      formData.pickupTime &&
-      formData.returnTime &&
-      formData.address &&
-      formData.city &&
-      formData.state &&
-      formData.driverLicenseNumber &&
-      formData.dlIssuedState &&
-      formData.dateOfBirth &&
-      formData.purpose &&
-      formData.destination &&
-      formData.originalDocumentsSubmitted
-    );
-  };
+  const prevStep = () => setStep((prev) => Math.max(prev - 1, 0));
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!validateForm()) return alert("Please fill all required fields.");
-
     setIsSubmitting(true);
-    try {
-      const bookingData = {
-        ...formData,
-        carId: car._id,
-        carName: car.name,
-        carNumber: car.registrationNumber,
-        pickupDateTime: `${formData.pickupDate} ${formData.pickupTime}`,
-        returnDateTime: `${formData.returnDate} ${formData.returnTime}`,
-        totalDays: calculateDays(),
-        totalAmount: calculateTotal(),
-      };
 
+    const bookingData = {
+      ...formData,
+      carId: car._id,
+      carName: car.name,
+      carNumber: car.registrationNumber,
+      pickupDateTime: `${formData.pickupDate} ${formData.pickupTime}`,
+      returnDateTime: `${formData.returnDate} ${formData.returnTime}`,
+      totalDays,
+      totalAmount,
+    };
+
+    try {
       const res = await axios.post("/bookings/book", bookingData, {
         headers: { Authorization: `Bearer ${userToken}` },
       });
-
       navigate("/thank-you", {
         state: {
           bookingId: res.data._id,
@@ -137,8 +177,7 @@ const BookCar = () => {
         },
       });
     } catch (err) {
-      console.error("Booking failed:", err);
-      alert("Booking failed. Try again.");
+      alert("Booking failed.");
     } finally {
       setIsSubmitting(false);
     }
@@ -150,195 +189,243 @@ const BookCar = () => {
     return <div className="text-danger text-center mt-5">Car not found.</div>;
 
   return (
-    <form className="container p-4 border rounded bg-light mt-3 mb-5" onSubmit={handleSubmit}>
-      <h3 className="mb-3 text-center">Book - {car.name}</h3>
+    <div className="container mt-4 mb-5 p-3 border rounded shadow bg-white">
+      <h2 className="text-center mb-4">
+        <Car className="me-2" size={28} /> Book - {car.name}
+      </h2>
 
-      {/* Customer details */}
-      <input
-        name="customerName"
-        className="form-control mb-2"
-        value={formData.customerName}
-        readOnly
-      />
-      <input
-        type="email"
-        name="customerEmail"
-        className="form-control mb-2"
-        placeholder="Email Address"
-        value={formData.customerEmail}
-        onChange={handleChange}
-      />
-      <input
-        name="customerPhone"
-        className="form-control mb-2"
-        value={formData.customerPhone}
-        readOnly
-      />
+      <StepIndicator step={step} />
 
-      {/* Address */}
-      <textarea
-        name="address"
-        className="form-control mb-2"
-        placeholder="Full Address"
-        value={formData.address}
-        onChange={handleChange}
-        required
-      />
-      <input
-        name="city"
-        className="form-control mb-2"
-        placeholder="City"
-        value={formData.city}
-        onChange={handleChange}
-        required
-      />
-      <input
-        name="state"
-        className="form-control mb-2"
-        placeholder="State"
-        value={formData.state}
-        onChange={handleChange}
-        required
-      />
-      <input
-        name="pinCode"
-        className="form-control mb-2"
-        placeholder="PIN Code"
-        value={formData.pinCode}
-        onChange={handleChange}
-      />
-      <input
-        name="country"
-        className="form-control mb-2"
-        placeholder="Country"
-        value={formData.country}
-        onChange={handleChange}
-      />
+      <form onSubmit={handleSubmit}>
+        {step === 0 && (
+          <div className="card p-4 mb-3 border-0 shadow-sm">
+            <h5 className="mb-3">
+              <User className="me-2" /> Your Details
+            </h5>
+            <input
+              className="form-control mb-2"
+              name="customerName"
+              value={formData.customerName}
+              readOnly
+            />
+            <input
+              type="email"
+              className="form-control mb-2"
+              name="customerEmail"
+              value={formData.customerEmail}
+              onChange={handleChange}
+              placeholder="Email"
+              required
+            />
+            <input
+              className="form-control mb-2"
+              name="customerPhone"
+              value={formData.customerPhone}
+              readOnly
+            />
+          </div>
+        )}
 
-      {/* License */}
-      <input
-        name="dateOfBirth"
-        type="date"
-        className="form-control mb-2"
-        value={formData.dateOfBirth}
-        onChange={handleChange}
-        required
-      />
-      <input
-        name="driverLicenseNumber"
-        className="form-control mb-2"
-        placeholder="Driver License Number"
-        value={formData.driverLicenseNumber}
-        onChange={handleChange}
-        required
-      />
-      <input
-        name="dlIssuedState"
-        className="form-control mb-2"
-        placeholder="DL Issued State"
-        value={formData.dlIssuedState}
-        onChange={handleChange}
-        required
-      />
+        {step === 1 && (
+          <div className="card p-4 mb-3 border-0 shadow-sm">
+            <h5 className="mb-3">
+              <MapPin className="me-2" /> Address Info
+            </h5>
+            <textarea
+              className="form-control mb-2"
+              name="address"
+              placeholder="Full Address"
+              value={formData.address}
+              onChange={handleChange}
+              required
+            />
+            <div className="row">
+              <div className="col-md-4">
+                <input
+                  className="form-control mb-2"
+                  name="city"
+                  placeholder="City"
+                  value={formData.city}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+              <div className="col-md-4">
+                <input
+                  className="form-control mb-2"
+                  name="state"
+                  placeholder="State"
+                  value={formData.state}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+              <div className="col-md-4">
+                <input
+                  className="form-control mb-2"
+                  name="pinCode"
+                  placeholder="PIN Code"
+                  value={formData.pinCode}
+                  onChange={handleChange}
+                />
+              </div>
+            </div>
+          </div>
+        )}
 
-      {/* Dates */}
-      <div className="row">
-        <div className="col-md-6 mb-2">
-          <label>Pickup Date</label>
-          <input
-            type="date"
-            name="pickupDate"
-            className="form-control"
-            value={formData.pickupDate}
-            onChange={handleChange}
-            required
-          />
+        {step === 2 && (
+          <div className="card p-4 mb-3 border-0 shadow-sm">
+            <h5 className="mb-3">
+              <ClipboardList className="me-2" /> License & ID
+            </h5>
+            <input
+              className="form-control mb-2"
+              type="date"
+              name="dateOfBirth"
+              value={formData.dateOfBirth}
+              onChange={handleChange}
+              required
+            />
+            <input
+              className="form-control mb-2"
+              name="driverLicenseNumber"
+              placeholder="License Number"
+              value={formData.driverLicenseNumber}
+              onChange={handleChange}
+              required
+            />
+            <input
+              className="form-control mb-2"
+              name="dlIssuedState"
+              placeholder="DL Issued State"
+              value={formData.dlIssuedState}
+              onChange={handleChange}
+              required
+            />
+          </div>
+        )}
+
+        {step === 3 && (
+          <div className="card p-4 mb-3 border-0 shadow-sm">
+            <h5 className="mb-3">
+              <Calendar className="me-2" /> Booking Schedule
+            </h5>
+            <div className="row">
+              <div className="col-md-6">
+                <label>Pickup Date & Time</label>
+                <input
+                  type="date"
+                  className="form-control mb-2"
+                  name="pickupDate"
+                  value={formData.pickupDate}
+                  onChange={handleChange}
+                  required
+                />
+                <input
+                  type="time"
+                  className="form-control mb-2"
+                  name="pickupTime"
+                  value={formData.pickupTime}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+              <div className="col-md-6">
+                <label>Return Date & Time</label>
+                <input
+                  type="date"
+                  className="form-control mb-2"
+                  name="returnDate"
+                  value={formData.returnDate}
+                  onChange={handleChange}
+                  required
+                />
+                <input
+                  type="time"
+                  className="form-control mb-2"
+                  name="returnTime"
+                  value={formData.returnTime}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+            </div>
+            <input
+              className="form-control mb-2"
+              name="purpose"
+              placeholder="Purpose"
+              value={formData.purpose}
+              onChange={handleChange}
+              required
+            />
+            <input
+              className="form-control mb-2"
+              name="destination"
+              placeholder="Destination"
+              value={formData.destination}
+              onChange={handleChange}
+              required
+            />
+            <input
+              className="form-control mb-2"
+              name="originalDocumentsSubmitted"
+              placeholder="Documents Submitted"
+              value={formData.originalDocumentsSubmitted}
+              onChange={handleChange}
+              required
+            />
+          </div>
+        )}
+
+        {step === 4 && (
+          <div className="card p-4 mb-3 border-0 shadow-sm">
+            <h5 className="mb-3">
+              <CheckCircle className="me-2" /> Booking Summary
+            </h5>
+            <p>Car: <strong>{car.name}</strong></p>
+            <p>Per Day Rate: ₹{car.price}</p>
+            <p>Total Days: {totalDays}</p>
+            <p><strong>Total Amount: ₹{totalAmount}</strong></p>
+            <textarea
+              className="form-control mt-2"
+              name="notes"
+              placeholder="Additional Notes"
+              value={formData.notes}
+              onChange={handleChange}
+            ></textarea>
+          </div>
+        )}
+
+        <div className="d-flex justify-content-between mt-3">
+          {step > 0 && (
+            <button
+              type="button"
+              className="btn btn-outline-secondary"
+              onClick={prevStep}
+            >
+              ← Back
+            </button>
+          )}
+          {step < 4 ? (
+            <button
+              type="button"
+              className="btn btn-primary ms-auto"
+              onClick={nextStep}
+            >
+              Next →
+            </button>
+          ) : (
+            <button
+              type="submit"
+              className="btn btn-success w-100"
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? "Booking..." : "Book Now"}
+            </button>
+          )}
         </div>
-        <div className="col-md-6 mb-2">
-          <label>Pickup Time</label>
-          <input
-            type="time"
-            name="pickupTime"
-            className="form-control"
-            value={formData.pickupTime}
-            onChange={handleChange}
-            required
-          />
-        </div>
-        <div className="col-md-6 mb-2">
-          <label>Return Date</label>
-          <input
-            type="date"
-            name="returnDate"
-            className="form-control"
-            value={formData.returnDate}
-            onChange={handleChange}
-            required
-          />
-        </div>
-        <div className="col-md-6 mb-2">
-          <label>Return Time</label>
-          <input
-            type="time"
-            name="returnTime"
-            className="form-control"
-            value={formData.returnTime}
-            onChange={handleChange}
-            required
-          />
-        </div>
-      </div>
-
-      {/* Purpose */}
-      <input
-        name="purpose"
-        className="form-control mb-2"
-        placeholder="Purpose of Renting"
-        value={formData.purpose}
-        onChange={handleChange}
-        required
-      />
-      <input
-        name="destination"
-        className="form-control mb-2"
-        placeholder="Destination"
-        value={formData.destination}
-        onChange={handleChange}
-        required
-      />
-      <input
-        name="originalDocumentsSubmitted"
-        className="form-control mb-2"
-        placeholder="Documents Submitted (e.g., Aadhaar + DL + RC)"
-        value={formData.originalDocumentsSubmitted}
-        onChange={handleChange}
-        required
-      />
-
-      <textarea
-        name="notes"
-        placeholder="Additional Notes"
-        className="form-control mb-2"
-        value={formData.notes}
-        onChange={handleChange}
-      ></textarea>
-
-      {/* Price summary */}
-      <div className="alert alert-info mt-3 small">
-        <strong>Rental Summary:</strong><br />
-        Per Day Rate: ₹{car?.price} <br />
-        Total Days: {calculateDays()} <br />
-        <strong>Total Amount: ₹{calculateTotal()}</strong>
-      </div>
-
-      <button
-        className="btn btn-primary mt-3 w-100"
-        type="submit"
-        disabled={isSubmitting}
-      >
-        {isSubmitting ? "Booking..." : "Book Now"}
-      </button>
-    </form>
+      </form>
+    </div>
   );
 };
 

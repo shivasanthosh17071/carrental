@@ -1,30 +1,32 @@
 import { useState, useEffect } from "react";
 import axios from "../api/axiosConfig";
 import { Phone, Lock, Key, User } from "lucide-react";
-import { useAuth } from "../AuthContext";
 import { useNavigate } from "react-router-dom";
+
 const UserLogin = () => {
-  const [mode, setMode] = useState("login"); // 'login' or 'register'
-  const [step, setStep] = useState("mobile"); // mobile → otp
+  const [mode, setMode] = useState("login");
+  const [step, setStep] = useState("form");
+  const [email, setEmail] = useState("");
   const [mobile, setMobile] = useState("");
   const [otp, setOtp] = useState("");
+  const [name, setName] = useState("");
   const [password, setPassword] = useState("");
-  const [name, setName] = useState(""); // only for registration
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const { token } = useAuth();
   const [user, setUser] = useState(null);
 
   const navigate = useNavigate();
+
   const reset = () => {
+    setEmail("");
     setMobile("");
     setOtp("");
-    setPassword("");
     setName("");
-    setStep("mobile");
-    setMessage("");
+    setPassword("");
+    setStep("form");
     setError("");
+    setMessage("");
   };
 
   const sendOtp = async (e) => {
@@ -34,9 +36,9 @@ const UserLogin = () => {
     setMessage("");
 
     try {
-      await axios.post(`users/send-otp`, { mobile });
+      await axios.post(`users/send-otp`, { email, mobile });
       setStep("otp");
-      setMessage("OTP sent to your mobile.");
+      setMessage("OTP sent to your email.");
     } catch (err) {
       setError(err.response?.data?.error || "Failed to send OTP.");
     } finally {
@@ -52,13 +54,18 @@ const UserLogin = () => {
 
     try {
       const res = await axios.post(`users/verify-otp`, {
+        name,
+        email,
         mobile,
         otp,
-        name,
         password,
       });
       localStorage.setItem("userToken", res.data.token);
-      setMessage("Registration successful. You're logged in.");
+     setMessage("Registration successful! Please login.");
+setTimeout(() => {
+  reset();
+  setMode("login");
+}, 2000);
     } catch (err) {
       setError(err.response?.data?.error || "OTP verification failed.");
     } finally {
@@ -77,39 +84,47 @@ const UserLogin = () => {
         mobile,
         password,
       });
-      localStorage.removeItem("userToken");
+
+      // Save token
       localStorage.setItem("userToken", res.data.token);
+
+      // Fetch user data
+      const userDataRes = await axios.get("/users/customerData", {
+        headers: {
+          Authorization: `Bearer ${res.data.token}`,
+        },
+      });
+
+      // Save user data and update UI
+      localStorage.setItem("userData", JSON.stringify(userDataRes.data));
+      setUser(userDataRes.data.name);
       setMessage("Login successful!");
+      setTimeout(() => navigate("/"), 2000);
     } catch (err) {
       setError(err.response?.data?.error || "Login failed.");
     } finally {
       setLoading(false);
     }
   };
-  const userToken = localStorage.getItem("userToken");
+
   useEffect(() => {
+    const userToken = localStorage.getItem("userToken");
     if (userToken) {
       axios
         .get("/users/customerData", {
           headers: {
-            "Content-Type": "application/json",
             Authorization: `Bearer ${userToken}`,
           },
         })
-        .then((response) => {
-          console.log(response)
-          localStorage.setItem("userData", JSON.stringify(response.data));
-          setUser(response.data.name);
-          setTimeout(() => navigate("/"), 2000);
+        .then((res) => {
+          localStorage.setItem("userData", JSON.stringify(res.data));
+          setUser(res.data.name);
         })
-        .catch((error) => {
-          console.error(
-            "Error fetching user data:",
-            error.response?.data || error.message
-          );
+        .catch((err) => {
+          console.error("Fetch user failed", err);
         });
     }
-  }, [userToken, navigate]);
+  }, []);
 
   return (
     <div className="min-vh-100 d-flex align-items-center justify-content-center bg-light">
@@ -117,17 +132,21 @@ const UserLogin = () => {
         <div className="row justify-content-center">
           <div className="col-md-6 col-lg-4">
             <div className="card shadow">
-              <div className="card-body p-5">
-                <div className="text-center mb-4">
-                  <h3 className="card-title">
-                    {mode === "login" ? "Login" : "Register"}
-                  </h3>
-                  <p className="text-muted">
+              <div className="card-body p-4">
+                <div className="text-center mb-3">
+                  <h4 className="fw-bold">
+                    {mode === "login"
+                      ? "Login"
+                      : mode === "register"
+                      ? "Register"
+                      : "Forgot Password"}
+                  </h4>
+                  <p className="text-muted mb-0">
                     {mode === "login"
                       ? "Login using mobile and password"
-                      : step === "mobile"
-                      ? "Register your mobile"
-                      : "Verify OTP & Set Password"}
+                      : step === "form"
+                      ? "Enter your info"
+                      : "Verify OTP & Proceed"}
                   </p>
                 </div>
 
@@ -136,32 +155,51 @@ const UserLogin = () => {
                   <div className="alert alert-success">{message}</div>
                 )}
 
-                {mode === "register" && step === "mobile" && (
-                  <form onSubmit={sendOtp}>
-                    <div className="mb-3">
-                      <label className="form-label">Mobile</label>
-                      <div className="input-group">
-                        <span className="input-group-text">
-                          <Phone size={16} />
-                        </span>
-                        <input
-                          type="text"
-                          className="form-control"
-                          value={mobile}
-                          onChange={(e) => setMobile(e.target.value)}
-                          placeholder="Enter mobile"
-                          required
-                        />
+                {(mode === "register" || mode === "forgot") &&
+                  step === "form" && (
+                    <form onSubmit={sendOtp}>
+                      <div className="mb-3">
+                        <label className="form-label">Email</label>
+                        <div className="input-group">
+                          <span className="input-group-text">@</span>
+                          <input
+                            type="email"
+                            className="form-control"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            placeholder="Enter email"
+                            required
+                          />
+                        </div>
                       </div>
-                    </div>
-                    <button
-                      className="btn btn-primary w-100"
-                      disabled={loading}
-                    >
-                      {loading ? "Sending OTP..." : "Send OTP"}
-                    </button>
-                  </form>
-                )}
+
+                      {mode === "register" && (
+                        <div className="mb-3">
+                          <label className="form-label">Mobile</label>
+                          <div className="input-group">
+                            <span className="input-group-text">
+                              <Phone size={16} />
+                            </span>
+                            <input
+                              type="text"
+                              className="form-control"
+                              value={mobile}
+                              onChange={(e) => setMobile(e.target.value)}
+                              placeholder="Enter mobile"
+                              required
+                            />
+                          </div>
+                        </div>
+                      )}
+
+                      <button
+                        className="btn btn-primary w-100"
+                        disabled={loading}
+                      >
+                        {loading ? "Sending OTP..." : "Send OTP"}
+                      </button>
+                    </form>
+                  )}
 
                 {mode === "register" && step === "otp" && (
                   <form onSubmit={verifyOtpAndRegister}>
@@ -200,7 +238,7 @@ const UserLogin = () => {
                     </div>
 
                     <div className="mb-4">
-                      <label className="form-label">Set Password</label>
+                      <label className="form-label">Password</label>
                       <div className="input-group">
                         <span className="input-group-text">
                           <Lock size={16} />
@@ -220,7 +258,7 @@ const UserLogin = () => {
                       className="btn btn-success w-100"
                       disabled={loading}
                     >
-                      {loading ? "Verifying..." : "Register"}
+                      {loading ? "Registering..." : "Register"}
                     </button>
                   </form>
                 )}
@@ -270,20 +308,34 @@ const UserLogin = () => {
                   </form>
                 )}
 
-                <div className="mt-4 text-center">
+                <div className="text-center mt-3">
                   {mode === "login" ? (
-                    <p>
-                      New user?{" "}
-                      <button
-                        className="btn btn-link p-0"
-                        onClick={() => {
-                          reset();
-                          setMode("register");
-                        }}
-                      >
-                        Register
-                      </button>
-                    </p>
+                    <>
+                      <p>
+                        New user?{" "}
+                        <button
+                          className="btn btn-link p-0"
+                          onClick={() => {
+                            reset();
+                            setMode("register");
+                          }}
+                        >
+                          Register
+                        </button>
+                      </p>
+                      <p>
+                        Forgot password?{" "}
+                        <button
+                          className="btn btn-link p-0"
+                          onClick={() => {
+                            reset();
+                            setMode("forgot");
+                          }}
+                        >
+                          Reset
+                        </button>
+                      </p>
+                    </>
                   ) : (
                     <p>
                       Already have an account?{" "}
@@ -299,8 +351,9 @@ const UserLogin = () => {
                     </p>
                   )}
                 </div>
+
                 {user && (
-                  <div className="alert alert-success text-center">
+                  <div className="alert alert-success text-center mt-3">
                     Thanks for logging in, {user}
                   </div>
                 )}

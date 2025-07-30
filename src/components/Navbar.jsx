@@ -86,6 +86,8 @@ useEffect(() => {
 
   const handleLogout = () => {
     localStorage.removeItem("userToken");
+    localStorage.removeItem("userData");
+    setUserInfo(null)
     setToken(null);
     setIsOpen(false);
     setShowLogoutModal(false);
